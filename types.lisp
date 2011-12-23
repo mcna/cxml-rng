@@ -1083,22 +1083,21 @@
       (t
        :error))))
 
-(defmethod parse/xsd ((type date-time-type) e context)
+(defmethod parse/xsd ((type date-type) e context)
   (declare (ignore context))
-  (destructuring-bind (&optional minusp y m d h min s tz tz-sign tz-h tz-m)
-      (scan-to-strings "(?x)
-                          ^(-)?                     # opt. minus
-                          ((?:[1-9]\\d*)?\\d{4})      # year
-                          -(\\d\\d)                   # month
-                          -(\\d\\d)                   # day
-                          T                         # (time)
-                          (\\d\\d)                    # hour
-                          :(\\d\\d)                   # minute
-                          :(\\d+(?:[.]\\d+)?)        # second
-                          (([+-])(\\d\\d):(\\d\\d)|Z)?  # opt timezone
-                          $"
-		       e)
-    (parse-time minusp y m d h min s tz tz-sign tz-h tz-m)))
+  (let ((result (scan-to-strings "(?x)
+                                  ^(-)?                       # opt. minus
+                                  ((?:[1-9]\\d*)?\\d{4})      # year
+                                  -(\\d\\d)                   # month
+                                  -(\\d\\d)                   # day
+                                  (([+-])(\\d\\d):(\\d\\d)|Z)?  # opt timezone
+                                  $"
+		       e)))
+    (if result
+        (destructuring-bind (&optional minusp y m d tz tz-sign tz-h tz-m) result
+          (parse-time minusp y m d "0" "0" "0" tz tz-sign tz-h tz-m
+                      :end 3))
+        (error "invalid xsd:date: ~S" e))))
 
 
 ;;; time
