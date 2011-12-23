@@ -1086,10 +1086,10 @@
 (defmethod parse/xsd ((type date-type) e context)
   (declare (ignore context))
   (let ((result (scan-to-strings "(?x)
-                                  ^(-)?                       # opt. minus
-                                  ((?:[1-9]\\d*)?\\d{4})      # year
-                                  -(\\d\\d)                   # month
-                                  -(\\d\\d)                   # day
+                                  ^(-)?                         # opt. minus
+                                  ((?:[1-9]\\d*)?\\d{4})        # year
+                                  -(\\d\\d)                     # month
+                                  -(\\d\\d)                     # day
                                   (([+-])(\\d\\d):(\\d\\d)|Z)?  # opt timezone
                                   $"
 		       e)))
