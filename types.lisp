@@ -520,7 +520,7 @@
     This slot reader returns a list of the type's
     @a[http://www.w3.org/TR/xmlschema-2/#rf-pattern]{pattern facets}."))
 
-(defmethod (setf patterns) :after (newval data-type)
+(defmethod (setf patterns) :after ((newval t) data-type)
   (slot-makunbound data-type 'compiled-patterns))
 
 (defclass xsd-type (data-type)
@@ -1083,22 +1083,6 @@
       (t
        :error))))
 
-(defmethod parse/xsd ((type date-type) e context)
-  (declare (ignore context))
-  (let ((result (scan-to-strings "(?x)
-                                  ^(-)?                         # opt. minus
-                                  ((?:[1-9]\\d*)?\\d{4})        # year
-                                  -(\\d\\d)                     # month
-                                  -(\\d\\d)                     # day
-                                  (([+-])(\\d\\d):(\\d\\d)|Z)?  # opt timezone
-                                  $"
-		       e)))
-    (if result
-        (destructuring-bind (&optional minusp y m d tz tz-sign tz-h tz-m) result
-          (parse-time minusp y m d "0" "0" "0" tz tz-sign tz-h tz-m
-                      :end 3))
-        (error "invalid xsd:date: ~S" e))))
-
 
 ;;; time
 
@@ -1653,7 +1637,7 @@
 (defmethod equal-using-type ((type any-uri-type) u v)
   (equal u v))
 
-(defmethod parse/xsd ((type any-uri-type) e context)
+(defmethod parse/xsd ((type any-uri-type) e (context t))
   (cxml-rng::escape-uri e))
 
 
@@ -1757,7 +1741,7 @@
 (defmethod munge-whitespace ((type xsd-string-type) e)
   e)
 
-(defmethod parse/xsd ((type xsd-string-type) e context)
+(defmethod parse/xsd ((type xsd-string-type) e (context t))
   e)
 
 
@@ -1868,7 +1852,7 @@
 (defmethod equal-using-type ((type ncname-type) u v)
   (equal u v))
 
-(defmethod parse/xsd ((type ncname-type) e context)
+(defmethod parse/xsd ((type ncname-type) e (context t))
   e)
 
 
