@@ -1003,7 +1003,7 @@
                           $"
 		       e)
     (declare (ignore usec)) ; fixme
-    (parse-time minusp y m d h min s tz tz-sign tz-h tz-m
+    (parse-time minusp y m d h min (or s "00") tz tz-sign tz-h tz-m
 		:end 3)))
 
 (defmethod equal-using-type ((type time-ordering-mixin) u v)
