@@ -1043,6 +1043,8 @@
 (defun parse-time (minusp y m d h min s tz tz-sign tz-h tz-m
 		       &key (start 0) end)
   (declare (ignore tz start end))		;zzz
+  (unless (and y m d h min s)
+    (return-from parse-time :error))
   ;; parse into numbers
   (flet ((int (str)
 	   (and str (parse-integer str)))
