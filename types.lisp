@@ -986,6 +986,26 @@
     @slot{max-exclusive}, and @slot{min-exclusive}.  The ordering is partial
     except within a timezone, see the spec for details."))
 
+(defmethod parse/xsd ((type date-time-type) e context)
+  (declare (ignore context))
+  (destructuring-bind (&optional minusp y m d h min s usec tz tz-sign tz-h tz-m)
+      (scan-to-strings "(?x)
+                          ^(-)?                         # opt. minus
+                          ((?:[1-9]\\d*)?\\d{4})        # year
+                          -(\\d\\d)                     # month
+                          -(\\d\\d)                     # day
+                          T
+                          (\\d\\d)                      # hour
+                          :(\\d\\d)                     # min
+                          (?::(\\d\\d))                 # sec
+                          (?:\\.(\\d{1,6}))             # usec
+                          (([+-])(\\d\\d):(\\d\\d)|Z)?  # opt timezone
+                          $"
+		       e)
+    (declare (ignore usec)) ; fixme
+    (parse-time minusp y m d h min s tz tz-sign tz-h tz-m
+		:end 3)))
+
 (defmethod equal-using-type ((type time-ordering-mixin) u v)
   (equal u v))
 
