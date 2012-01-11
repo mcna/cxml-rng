@@ -851,7 +851,7 @@
 (defmethod expectation ((pattern choice) s)
   (pprint-logical-block (s nil)
     (expectation (pattern-a pattern) s)
-    (format s "~:@_or ")
+    (format s "~:@_ or ")
     (expectation (pattern-b pattern) s)))
 
 (defmethod expectation ((pattern element) s)
@@ -914,7 +914,7 @@
 (defmethod describe-name ((nc name-class-choice) s)
   (pprint-logical-block (s nil)
     (describe-name (name-class-choice-a nc) s)
-    (format s "~:@_or ")
+    (format s "~:@_ or ")
     (describe-name (name-class-choice-b nc) s)))
 
 
